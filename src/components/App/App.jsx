@@ -24,13 +24,9 @@ export class App extends Component {
       localStorage.getItem(localStorageItemsName.CONTACTS)
     );
 
-    if (!parseContacts) {
-      this.setState({ contacts: [] });
-
-      return;
+    if (parseContacts) {
+      this.setState({ contacts: parseContacts });
     }
-
-    this.setState({ contacts: parseContacts });
   }
 
   componentDidUpdate(_, prevState) {
