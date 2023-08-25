@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { ContactForm } from 'components/ContactForm';
 import { ContactList } from 'components/ContactList';
 import { Filter } from 'components/Filter';
@@ -13,36 +13,36 @@ const localStorageItemsName = {
   CONTACTS: 'contacts',
 };
 
-export class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
+export const App = () => {
+  const [contacts, setContacts] = useState([]);
+  const [filter, setFilter] = useState('');
 
-  componentDidMount() {
+  const mounted = useRef(false);
+
+  useEffect(() => {
     const parseContacts = JSON.parse(
       localStorage.getItem(localStorageItemsName.CONTACTS)
     );
 
     if (parseContacts) {
-      this.setState({ contacts: parseContacts });
+      setContacts(parseContacts);
     }
-  }
+  }, []);
 
-  componentDidUpdate(_, prevState) {
-    const prevContacts = prevState.contacts;
-    const nextContacts = this.state.contacts;
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
 
-    if (nextContacts !== prevContacts) {
-      const stringifyContacts = JSON.stringify(nextContacts);
-
-      localStorage.setItem(localStorageItemsName.CONTACTS, stringifyContacts);
+      return;
     }
-  }
 
-  onContactFormSubmit = contact => {
+    const stringifyContacts = JSON.stringify(contacts);
+
+    localStorage.setItem(localStorageItemsName.CONTACTS, stringifyContacts);
+  }, [contacts]);
+
+  const onContactFormSubmit = contact => {
     const { name: newContactName } = contact;
-    const { contacts } = this.state;
 
     if (contacts.find(({ name }) => name === newContactName)) {
       alert(`${newContactName} is already in contacts`);
@@ -50,52 +50,52 @@ export class App extends Component {
       return;
     }
 
-    this.setState(prevState => ({
-      contacts: [contact, ...prevState.contacts],
-    }));
+    setContacts(prevContacts => [contact, ...prevContacts]);
   };
 
-  onChangeFilterInput = e => {
+  const onChangeFilterInput = e => {
     const { name, value } = e.currentTarget;
 
-    this.setState({ [name]: value });
+    switch (name) {
+      case 'filter':
+        setFilter(value);
+        break;
+      default:
+        break;
+    }
   };
 
-  onClickButtonDelete = id => {
-    this.setState(({ contacts }) => {
-      const contactsWithoutDeleted = contacts.filter(
+  const onClickButtonDelete = id => {
+    setContacts(prevContacts => {
+      const contactsWithoutDeleted = prevContacts.filter(
         ({ id: contactId }) => contactId !== id
       );
 
-      return { contacts: [...contactsWithoutDeleted] };
+      return [...contactsWithoutDeleted];
     });
   };
 
-  render() {
-    const { contacts, filter } = this.state;
-    const normalizedFilter = filter.toLowerCase();
-    const filteredContacts = contacts.filter(({ name }) =>
+  const normalizedFilter = filter.toLowerCase();
+  const filteredContacts = useMemo(() => {
+    return contacts.filter(({ name }) =>
       name.toLowerCase().includes(normalizedFilter)
     );
+  }, [contacts, normalizedFilter]);
 
-    return (
-      <Wrapper>
-        <MainTitle>Phonebook</MainTitle>
-        <ContactForm onFormSubmit={this.onContactFormSubmit} />
-        <ContactsTitle>Contacts</ContactsTitle>
-        <Filter
-          onChangeFilterInput={this.onChangeFilterInput}
-          filter={filter}
+  return (
+    <Wrapper>
+      <MainTitle>Phonebook</MainTitle>
+      <ContactForm onFormSubmit={onContactFormSubmit} />
+      <ContactsTitle>Contacts</ContactsTitle>
+      <Filter onChangeFilterInput={onChangeFilterInput} filter={filter} />
+      {filteredContacts.length > 0 ? (
+        <ContactList
+          onClickButtonDelete={onClickButtonDelete}
+          contacts={filteredContacts}
         />
-        {filteredContacts.length > 0 ? (
-          <ContactList
-            onClickButtonDelete={this.onClickButtonDelete}
-            contacts={filteredContacts}
-          />
-        ) : (
-          <MessageNotFound>No contacts found</MessageNotFound>
-        )}
-      </Wrapper>
-    );
-  }
-}
+      ) : (
+        <MessageNotFound>No contacts found</MessageNotFound>
+      )}
+    </Wrapper>
+  );
+};
