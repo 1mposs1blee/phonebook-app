@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { ContactForm } from 'components/ContactForm';
 import { ContactList } from 'components/ContactList';
 import { Filter } from 'components/Filter';
@@ -14,28 +14,14 @@ const localStorageItemsName = {
 };
 
 export const App = () => {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(() => {
+    return (
+      JSON.parse(localStorage.getItem(localStorageItemsName.CONTACTS)) || []
+    );
+  });
   const [filter, setFilter] = useState('');
 
-  const mounted = useRef(false);
-
   useEffect(() => {
-    const parseContacts = JSON.parse(
-      localStorage.getItem(localStorageItemsName.CONTACTS)
-    );
-
-    if (parseContacts) {
-      setContacts(parseContacts);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!mounted.current) {
-      mounted.current = true;
-
-      return;
-    }
-
     const stringifyContacts = JSON.stringify(contacts);
 
     localStorage.setItem(localStorageItemsName.CONTACTS, stringifyContacts);
@@ -44,7 +30,11 @@ export const App = () => {
   const onContactFormSubmit = contact => {
     const { name: newContactName } = contact;
 
-    if (contacts.find(({ name }) => name === newContactName)) {
+    if (
+      contacts.find(
+        ({ name }) => name.toLowerCase() === newContactName.toLowerCase()
+      )
+    ) {
       alert(`${newContactName} is already in contacts`);
 
       return;
@@ -54,15 +44,9 @@ export const App = () => {
   };
 
   const onChangeFilterInput = e => {
-    const { name, value } = e.currentTarget;
+    const { value } = e.currentTarget;
 
-    switch (name) {
-      case 'filter':
-        setFilter(value);
-        break;
-      default:
-        break;
-    }
+    setFilter(value);
   };
 
   const onClickButtonDelete = id => {
