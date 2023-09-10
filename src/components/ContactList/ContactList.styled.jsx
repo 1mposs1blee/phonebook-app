@@ -35,3 +35,5 @@ export const ButtonDeleteContact = styled.button`
     transform: translateY(2px);
   }
 `;
+
+export const MessageNotFound = styled.p``;

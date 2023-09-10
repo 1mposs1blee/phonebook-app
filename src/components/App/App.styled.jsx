@@ -11,5 +11,3 @@ margin-bottom: 10px;
 export const ContactsTitle = styled.h2`
 margin-bottom: 10px;
 `;
-
-export const MessageNotFound = styled.p``;

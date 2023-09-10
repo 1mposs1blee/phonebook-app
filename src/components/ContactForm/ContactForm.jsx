@@ -1,5 +1,6 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact, getContacts } from 'redux/ContactsSlice';
 import { nanoid } from 'nanoid';
-import PropTypes from 'prop-types';
 import { Formik, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import {
@@ -23,14 +24,14 @@ const schema = yup.object().shape({
   name: yup
     .string()
     .matches(
-      /^[a-zA-Zа-яА-ЯІіЇїҐґ' \-\u0400-\u04FF]+$/,
+      /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/,
       "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan."
     )
     .required('Name is required.'),
   number: yup
     .string()
     .matches(
-      /^[+]?[0-9\\.\\-\\s]{1,15}$/,
+      /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/,
       "Phone number must be digits and can contain spaces, dashes, parentheses and can start with '+'."
     )
     .required('Phone number is required.'),
@@ -43,11 +44,22 @@ const initialValues = {
 const nameInputId = nanoid();
 const telInputId = nanoid();
 
-export const ContactForm = ({ onFormSubmit }) => {
-  const handleSubmit = ({ name, number }, { resetForm }) => {
-    const trimName = name.trim();
+export const ContactForm = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
 
-    onFormSubmit({ name: trimName, number, id: nanoid() });
+  const handleSubmit = ({ name, number }, { resetForm }) => {
+    const newNormalizedName = name.trim().toLowerCase();
+
+    if (contacts.find(({ name }) => name === newNormalizedName)) {
+      alert(`${newNormalizedName} is already in contacts`);
+
+      resetForm();
+
+      return;
+    }
+
+    dispatch(addContact({ name: newNormalizedName, number, id: nanoid() }));
 
     resetForm();
   };
@@ -61,30 +73,16 @@ export const ContactForm = ({ onFormSubmit }) => {
       <ContactsForm>
         <Label htmlFor={nameInputId}>
           Name
-          <Input
-            type="text"
-            id={nameInputId}
-            name="name"
-            required
-          />
+          <Input type="text" id={nameInputId} name="name" required />
           <FormError name="name" />
         </Label>
         <Label htmlFor={telInputId}>
           Number
-          <Input
-            type="tel"
-            id={telInputId}
-            name="number"
-            required
-          />
+          <Input type="tel" id={telInputId} name="number" required />
           <FormError name="number" />
         </Label>
         <Button type="submit">Add contact</Button>
       </ContactsForm>
     </Formik>
   );
-};
-
-ContactForm.propTypes = {
-  onFormSubmit: PropTypes.func.isRequired,
 };

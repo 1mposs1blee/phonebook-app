@@ -1,25 +1,25 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { getFilter, changeFilter } from 'redux/FilterSlice';
 import { nanoid } from 'nanoid';
-import PropTypes from 'prop-types'; 
 import { LabelFilterInput, FilterInput } from './Filter.styled';
 
-export const Filter = ({ onChangeFilterInput, filter }) => {
+export const Filter = () => {
+  const dispatch = useDispatch();
   const filterInputId = nanoid();
+
+  const onChangeInput = ({ currentTarget }) =>
+    dispatch(changeFilter(currentTarget.value));
 
   return (
     <LabelFilterInput htmlFor={filterInputId}>
       Find contacts by name
       <FilterInput
-        onChange={onChangeFilterInput}
+        onChange={onChangeInput}
         type="text"
         id={filterInputId}
         name="filter"
-        value={filter}
+        value={useSelector(getFilter)}
       />
     </LabelFilterInput>
   );
 };
-
-Filter.propTypes = {
-  onChangeFilterInput: PropTypes.func.isRequired,
-  filter: PropTypes.string.isRequired,
-}
