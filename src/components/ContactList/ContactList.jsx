@@ -1,6 +1,5 @@
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { selectFilteredContacts } from 'redux/ContactsSlice';
+import { selectFilteredContacts, selectIsLoading } from 'redux/ContactsSlice';
 import { ContactItem } from 'components/ContactItem';
 import {
   ContactsList,
@@ -8,22 +7,23 @@ import {
   MessageLoading,
 } from './ContactList.styled';
 
-export const ContactList = ({ isLoading }) => {
+export const ContactList = () => {
   const filteredContacts = useSelector(selectFilteredContacts);
+  const isLoading = useSelector(selectIsLoading);
 
-  return filteredContacts.length > 0 ? (
-    <ContactsList>
-      {filteredContacts.map(contact => (
-        <ContactItem key={contact.id} contact={contact} />
-      ))}
-    </ContactsList>
-  ) : isLoading ? (
-    <MessageLoading>Loading...</MessageLoading>
-  ) : (
-    <MessageNotFound>No contacts found</MessageNotFound>
-  );
-};
+  if (filteredContacts.length > 0) {
+    return (
+      <ContactsList>
+        {filteredContacts.map(contact => (
+          <ContactItem key={contact.id} contact={contact} />
+        ))}
+      </ContactsList>
+    );
+  }
 
-ContactList.propTypes = {
-  isLoading: PropTypes.bool.isRequired,
+  if (isLoading) {
+    return <MessageLoading>Loading...</MessageLoading>;
+  }
+
+  return <MessageNotFound>No contacts found</MessageNotFound>;
 };

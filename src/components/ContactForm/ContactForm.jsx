@@ -55,10 +55,12 @@ export const ContactForm = () => {
   const handleSubmit = async ({ name, number }, { resetForm }) => {
     setFormIsLoading(true);
 
-    const newNormalizedName = name.trim().toLowerCase();
+    const trimName = name.trim();
 
-    if (contacts.find(({ name }) => name === newNormalizedName)) {
-      toast.error(`${newNormalizedName} is already in contacts`);
+    if (
+      contacts.find(({ name }) => name.toLowerCase() === trimName.toLowerCase())
+    ) {
+      toast.error(`${trimName} is already in contacts`);
 
       resetForm();
 
@@ -68,7 +70,7 @@ export const ContactForm = () => {
     }
 
     await dispatch(
-      contactsOperations.addContact({ name: newNormalizedName, phone: number })
+      contactsOperations.addContact({ name: trimName, phone: number })
     );
 
     resetForm();
