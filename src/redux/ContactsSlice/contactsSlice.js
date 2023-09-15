@@ -1,34 +1,64 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
+import { selectFilter } from 'redux/FilterSlice';
+import { fetchContacts, addContact, deleteContact } from './operations';
+
+const initialState = { items: [], isLoading: false, error: null };
+
+const handlePending = state => {
+  state.isLoading = true;
+  state.error = null;
+};
+
+const handleRejected = (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+};
 
 const contactsSlice = createSlice({
   name: 'contacts',
-  initialState: { phoneContacts: [] },
-  reducers: {
-    addContact(state, action) {
-      state.phoneContacts.push(action.payload);
+  initialState,
+  extraReducers: {
+    [fetchContacts.pending]: handlePending,
+    [fetchContacts.fulfilled](state, action) {
+      state.isLoading = false;
+      state.error = null;
+      state.items = action.payload;
     },
-    deleteContact(state, action) {
-      state.phoneContacts = state.phoneContacts.filter(
-        ({ id: contactId }) => contactId !== action.payload
+    [fetchContacts.rejected]: handleRejected,
+    [addContact.pending]: handlePending,
+    [addContact.fulfilled](state, action) {
+      state.isLoading = false;
+      state.error = null;
+      state.items.push(action.payload);
+    },
+    [addContact.rejected]: handleRejected,
+    [deleteContact.pending]: handlePending,
+    [deleteContact.fulfilled](state, action) {
+      state.isLoading = false;
+      state.error = null;
+      state.items = state.items.filter(
+        ({ id: contactId }) => contactId !== action.payload.id
       );
     },
+    [deleteContact.rejected]: handleRejected,
   },
 });
 
-const persistConfig = {
-  key: 'contacts',
-  storage,
-};
-
-export const contactsReducer = persistReducer(
-  persistConfig,
-  contactsSlice.reducer
-);
-
-export const { addContact, deleteContact } = contactsSlice.actions;
+export const contactsReducer = contactsSlice.reducer;
 
 //Selectors
 
-export const getContacts = state => state.contacts.phoneContacts;
+export const selectContacts = state => state.contacts.items;
+
+export const selectIsLoading = state => state.contacts.isLoading;
+
+export const selectError = state => state.contacts.error;
+
+export const selectFilteredContacts = createSelector(
+  [selectContacts, selectFilter],
+  (contacts, filter) => {
+    const normalizedFilter = filter.toLowerCase().trim();
+
+    return contacts.filter(({ name }) => name.includes(normalizedFilter));
+  }
+);

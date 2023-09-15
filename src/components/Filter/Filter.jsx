@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { getFilter, changeFilter } from 'redux/FilterSlice';
 import { nanoid } from 'nanoid';
+import { selectFilter, changeFilter } from 'redux/FilterSlice';
 import { LabelFilterInput, FilterInput } from './Filter.styled';
 
 export const Filter = () => {
   const dispatch = useDispatch();
+
   const filterInputId = nanoid();
 
   const onChangeInput = ({ currentTarget }) =>
@@ -18,7 +19,7 @@ export const Filter = () => {
         type="text"
         id={filterInputId}
         name="filter"
-        value={useSelector(getFilter)}
+        value={useSelector(selectFilter)}
       />
     </LabelFilterInput>
   );

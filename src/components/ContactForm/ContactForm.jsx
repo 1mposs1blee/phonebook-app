@@ -1,8 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact, getContacts } from 'redux/ContactsSlice';
+import { useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import { nanoid } from 'nanoid';
-import { Formik, ErrorMessage } from 'formik';
 import * as yup from 'yup';
+import { Formik, ErrorMessage } from 'formik';
+import { selectContacts, contactsOperations } from 'redux/ContactsSlice';
 import {
   ContactsForm,
   Label,
@@ -45,44 +47,59 @@ const nameInputId = nanoid();
 const telInputId = nanoid();
 
 export const ContactForm = () => {
-  const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const [formIsLoading, setFormIsLoading] = useState(false);
 
-  const handleSubmit = ({ name, number }, { resetForm }) => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(selectContacts);
+
+  const handleSubmit = async ({ name, number }, { resetForm }) => {
+    setFormIsLoading(true);
+
     const newNormalizedName = name.trim().toLowerCase();
 
     if (contacts.find(({ name }) => name === newNormalizedName)) {
-      alert(`${newNormalizedName} is already in contacts`);
+      toast.error(`${newNormalizedName} is already in contacts`);
 
       resetForm();
+
+      setFormIsLoading(false);
 
       return;
     }
 
-    dispatch(addContact({ name: newNormalizedName, number, id: nanoid() }));
+    await dispatch(
+      contactsOperations.addContact({ name: newNormalizedName, phone: number })
+    );
 
     resetForm();
+
+    setFormIsLoading(false);
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={schema}
-      onSubmit={handleSubmit}
-    >
-      <ContactsForm>
-        <Label htmlFor={nameInputId}>
-          Name
-          <Input type="text" id={nameInputId} name="name" required />
-          <FormError name="name" />
-        </Label>
-        <Label htmlFor={telInputId}>
-          Number
-          <Input type="tel" id={telInputId} name="number" required />
-          <FormError name="number" />
-        </Label>
-        <Button type="submit">Add contact</Button>
-      </ContactsForm>
-    </Formik>
+    <>
+      <Toaster position="top-right" reverseOrder={false} />
+      <Formik
+        initialValues={initialValues}
+        validationSchema={schema}
+        onSubmit={handleSubmit}
+      >
+        <ContactsForm>
+          <Label htmlFor={nameInputId}>
+            Name
+            <Input type="text" id={nameInputId} name="name" required />
+            <FormError name="name" />
+          </Label>
+          <Label htmlFor={telInputId}>
+            Number
+            <Input type="tel" id={telInputId} name="number" required />
+            <FormError name="number" />
+          </Label>
+          <Button disabled={formIsLoading} type="submit">
+            {formIsLoading ? 'Loading...' : 'Add contact'}
+          </Button>
+        </ContactsForm>
+      </Formik>
+    </>
   );
 };
