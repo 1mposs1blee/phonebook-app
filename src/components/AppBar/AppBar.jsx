@@ -9,11 +9,11 @@ export const AppBar = () => {
 
   return (
     <>
-    <Header>
-      <Navigation />
-      {isLoggedIn ? <UserMenu /> : <AuthNav />}
-    </Header>
+      <Header>
+        <Navigation />
+        {isLoggedIn ? <UserMenu /> : <AuthNav />}
+      </Header>
       <LineWrapper />
-      </>
+    </>
   );
 };

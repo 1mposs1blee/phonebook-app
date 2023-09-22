@@ -6,7 +6,7 @@ import {
   ContactsListItem,
   ListItemText,
   ButtonDeleteContact,
-  LineWrapper
+  LineWrapper,
 } from './ContactItem.styled';
 
 export const ContactItem = ({ contact }) => {
@@ -26,7 +26,7 @@ export const ContactItem = ({ contact }) => {
 
   return (
     <>
-    <ContactsListItem>
+      <ContactsListItem>
         <ListItemText>
           {name}: {number}
         </ListItemText>
@@ -37,9 +37,9 @@ export const ContactItem = ({ contact }) => {
         >
           {contactIsLoading ? 'Loading...' : 'Delete'}
         </ButtonDeleteContact>
-    </ContactsListItem>
+      </ContactsListItem>
       <LineWrapper />
-      </>
+    </>
   );
 };
 

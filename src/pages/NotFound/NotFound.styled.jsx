@@ -15,7 +15,7 @@ const gradientAnimationLeftToRight = keyframes`
   }
 `;
 
-export const HomeTitle = styled.h1`
+export const NotFoundTitle = styled.h1`
   padding: 2px;
   background: linear-gradient(to right, rgb(63, 81, 181), #00aaff);
   -webkit-background-clip: text;

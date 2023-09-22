@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
 
 export const LabelFilterInput = styled.label`
-  display: flex;
   margin-bottom: 18px;
+  font-weight: 600;
+  display: flex;
 
   justify-content: center;
   flex-direction: column;
@@ -10,7 +11,7 @@ export const LabelFilterInput = styled.label`
 `;
 
 export const FilterInput = styled.input`
+  font-weight: 600;
   width: 500px;
   height: 25px;
-  font-size: 17px;
 `;

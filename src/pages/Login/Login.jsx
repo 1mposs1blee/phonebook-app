@@ -1,9 +1,10 @@
 import { LoginForm } from 'components/LoginForm';
-import { Wrapper } from './Login.styled';
+import { Wrapper, Title } from './Login.styled';
 
 const Login = () => {
   return (
     <Wrapper>
+      <Title>Login</Title>
       <LoginForm />
     </Wrapper>
   );

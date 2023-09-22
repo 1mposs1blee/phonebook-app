@@ -6,12 +6,12 @@ import { PrivateRoute } from 'components/PrivateRoute';
 import { RestrictedRoute } from 'components/RestrictedRoute';
 import { refreshUser } from 'redux/AuthSlice/operations';
 import { useAuth } from 'hooks';
-// import { RefreshingMessage } from './App.styled';
 
 const HomePage = lazy(() => import('pages/Home'));
 const RegisterPage = lazy(() => import('pages/Register'));
 const LoginPage = lazy(() => import('pages/Login'));
-const PhoneBookPage = lazy(() => import('pages/PhoneBook'));
+const ContactBookPage = lazy(() => import('pages/ContactBook'));
+const PageNotFound = lazy(() => import('pages/NotFound'));
 
 export const App = () => {
   const dispatch = useDispatch();
@@ -22,41 +22,40 @@ export const App = () => {
   }, [dispatch]);
 
   return (
-
-      !isRefreshing &&  (
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<HomePage />} />
-            <Route
-              path="register"
-              element={
-                <RestrictedRoute
-                  redirectTo="/phonebook"
-                  component={<RegisterPage />}
-                />
-              }
-            />
-            <Route
-              path="login"
-              element={
-                <RestrictedRoute
-                  redirectTo="/phonebook"
-                  component={<LoginPage />}
-                />
-              }
-            />
-            <Route
-              path="phonebook"
-              element={
-                <PrivateRoute
-                  redirectTo="/login"
-                  component={<PhoneBookPage />}
-                />
-              }
-            />
-            <Route path="*" element={<HomePage />} />
-          </Route>
-        </Routes>
-      )
+    !isRefreshing && (
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route
+            path="register"
+            element={
+              <RestrictedRoute
+                redirectTo="/contactbook"
+                component={<RegisterPage />}
+              />
+            }
+          />
+          <Route
+            path="login"
+            element={
+              <RestrictedRoute
+                redirectTo="/contactbook"
+                component={<LoginPage />}
+              />
+            }
+          />
+          <Route
+            path="contactbook"
+            element={
+              <PrivateRoute
+                redirectTo="/login"
+                component={<ContactBookPage />}
+              />
+            }
+          />
+          <Route path="*" element={<PageNotFound />} />
+        </Route>
+      </Routes>
+    )
   );
 };

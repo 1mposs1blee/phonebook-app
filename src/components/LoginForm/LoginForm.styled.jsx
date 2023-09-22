@@ -1,5 +1,9 @@
 import styled from '@emotion/styled';
 
+export const ToastText = styled.span`
+  font-weight: 600;
+`;
+
 export const LogForm = styled.form`
   padding: 10px;
 
@@ -14,6 +18,7 @@ export const LogForm = styled.form`
 `;
 
 export const Label = styled.label`
+  font-weight: 600;
   display: flex;
 
   justify-content: center;
@@ -22,12 +27,13 @@ export const Label = styled.label`
 `;
 
 export const Input = styled.input`
+  font-weight: 600;
   width: 500px;
   height: 25px;
-  font-size: 17px;
 `;
 
 export const Button = styled.button`
+  font-weight: 600;
   width: 100px;
   height: 30px;
   border-radius: 4px;
@@ -39,4 +45,10 @@ export const Button = styled.button`
   color: rgb(255, 255, 255);
   border: none;
   cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+
+  &:hover,
+  &:focus {
+    background-color: rgb(0, 170, 255);
+  }
 `;

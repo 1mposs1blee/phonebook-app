@@ -12,6 +12,7 @@ import {
   Input,
   Button,
   ErrorText,
+  ToastText,
 } from './ContactForm.styled';
 
 const FormError = ({ name }) => {
@@ -63,10 +64,9 @@ export const ContactForm = () => {
     if (
       contacts.find(({ name }) => name.toLowerCase() === trimName.toLowerCase())
     ) {
-
-      toast.error(`${trimName} is already in contacts`, {
-      autoClose: 2000,
-    });
+      toast.error(<ToastText>{trimName} is already in contacts.</ToastText>, {
+        autoClose: 2000,
+      });
 
       resetForm();
 
@@ -75,9 +75,7 @@ export const ContactForm = () => {
       return;
     }
 
-    await dispatch(
-      contactsOperations.addContact({ name: trimName, number })
-    );
+    await dispatch(contactsOperations.addContact({ name: trimName, number }));
 
     resetForm();
 
@@ -86,7 +84,7 @@ export const ContactForm = () => {
 
   return (
     <>
-     <ToastContainer />
+      <ToastContainer />
       <Formik
         initialValues={initialValues}
         validationSchema={schema}
@@ -102,7 +100,7 @@ export const ContactForm = () => {
             Number
             <Input type="tel" id={telInputId} name="number" required />
             <FormError name="number" />
-            </Label>
+          </Label>
           <Button disabled={formIsLoading} type="submit">
             {formIsLoading ? 'Loading...' : 'Add contact'}
           </Button>

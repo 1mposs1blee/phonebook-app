@@ -1,19 +1,22 @@
 import styled from '@emotion/styled';
 
 export const ContactsListItem = styled.li`
-display: flex;
-align-items: center;
+  display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 10px;
-
 `;
 
-export const ListItemWrapper = styled.div`
-`;
+export const ListItemText = styled.p`
+  font-weight: 600;
 
-export const ListItemText = styled.p``;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 export const ButtonDeleteContact = styled.button`
+  font-weight: 600;
   width: 100px;
   height: 30px;
   border-radius: 4px;
@@ -25,6 +28,12 @@ export const ButtonDeleteContact = styled.button`
   color: rgb(255, 255, 255);
   border: none;
   cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+
+  &:hover,
+  &:focus {
+    background-color: rgb(0, 170, 255);
+  }
 `;
 
 export const LineWrapper = styled.hr`

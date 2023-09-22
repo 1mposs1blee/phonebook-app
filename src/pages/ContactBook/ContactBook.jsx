@@ -7,9 +7,14 @@ import { selectError } from 'redux/ContactsSlice';
 import { ContactList } from 'components/ContactList';
 import { ContactForm } from 'components/ContactForm';
 import { Filter } from 'components/Filter';
-import { Wrapper, PhoneBookTitle, ContactsTitle } from './PhoneBook.styled';
+import {
+  Wrapper,
+  PhoneBookTitle,
+  ContactsTitle,
+  ToastText,
+} from './ContactBook.styled';
 
-const PhoneBook = () => {
+const ContactBook = () => {
   const dispatch = useDispatch();
   const errorInfo = useSelector(selectError);
 
@@ -17,16 +22,18 @@ const PhoneBook = () => {
     dispatch(contactsOperations.fetchContacts());
   }, [dispatch]);
 
-  if (errorInfo) {
-    toast.error(errorInfo, {
-      autoClose: 2000,
-    });
-  }
+  useEffect(() => {
+    if (errorInfo) {
+      toast.error(<ToastText>{errorInfo}</ToastText>, {
+        autoClose: 2000,
+      });
+    }
+  }, [errorInfo]);
 
   return (
     <Wrapper>
       <ToastContainer />
-      <PhoneBookTitle>PhoneBook</PhoneBookTitle>
+      <PhoneBookTitle>ContactBook</PhoneBookTitle>
       <ContactForm />
       <ContactsTitle>Contacts</ContactsTitle>
       <Filter />
@@ -35,4 +42,4 @@ const PhoneBook = () => {
   );
 };
 
-export default PhoneBook;
+export default ContactBook;
