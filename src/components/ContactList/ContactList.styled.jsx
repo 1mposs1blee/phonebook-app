@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 
 export const ContactsList = styled.ul`
-  padding-left: 30px;
 
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 10px;
+  list-style: none;
 `;
 
 export const MessageLoading = styled.p``;

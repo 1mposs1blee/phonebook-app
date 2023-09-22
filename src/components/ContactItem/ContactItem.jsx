@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { contactsOperations } from 'redux/ContactsSlice';
 import {
   ContactsListItem,
-  ListItemWrapper,
   ListItemText,
   ButtonDeleteContact,
+  LineWrapper
 } from './ContactItem.styled';
 
 export const ContactItem = ({ contact }) => {
@@ -14,7 +14,7 @@ export const ContactItem = ({ contact }) => {
 
   const dispatch = useDispatch();
 
-  const { name, phone, id } = contact;
+  const { name, number, id } = contact;
 
   const handleClick = async () => {
     setContactIsLoading(true);
@@ -25,10 +25,10 @@ export const ContactItem = ({ contact }) => {
   };
 
   return (
+    <>
     <ContactsListItem>
-      <ListItemWrapper>
         <ListItemText>
-          {name}: {phone}
+          {name}: {number}
         </ListItemText>
         <ButtonDeleteContact
           disabled={contactIsLoading}
@@ -37,15 +37,16 @@ export const ContactItem = ({ contact }) => {
         >
           {contactIsLoading ? 'Loading...' : 'Delete'}
         </ButtonDeleteContact>
-      </ListItemWrapper>
     </ContactsListItem>
+      <LineWrapper />
+      </>
   );
 };
 
 ContactItem.propTypes = {
   contact: PropTypes.shape({
     name: PropTypes.string.isRequired,
-    phone: PropTypes.string.isRequired,
+    number: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
   }).isRequired,
 };

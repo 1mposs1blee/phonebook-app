@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { nanoid } from 'nanoid';
 import * as yup from 'yup';
 import { Formik, ErrorMessage } from 'formik';
@@ -29,6 +30,7 @@ const schema = yup.object().shape({
       /^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/,
       "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan."
     )
+    .max(25, 'Name must not exceed 25 characters.')
     .required('Name is required.'),
   number: yup
     .string()
@@ -36,6 +38,7 @@ const schema = yup.object().shape({
       /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/,
       "Phone number must be digits and can contain spaces, dashes, parentheses and can start with '+'."
     )
+    .max(25, 'Phone number must not exceed 25 characters.')
     .required('Phone number is required.'),
 });
 
@@ -60,7 +63,10 @@ export const ContactForm = () => {
     if (
       contacts.find(({ name }) => name.toLowerCase() === trimName.toLowerCase())
     ) {
-      toast.error(`${trimName} is already in contacts`);
+
+      toast.error(`${trimName} is already in contacts`, {
+      autoClose: 2000,
+    });
 
       resetForm();
 
@@ -70,7 +76,7 @@ export const ContactForm = () => {
     }
 
     await dispatch(
-      contactsOperations.addContact({ name: trimName, phone: number })
+      contactsOperations.addContact({ name: trimName, number })
     );
 
     resetForm();
@@ -80,7 +86,7 @@ export const ContactForm = () => {
 
   return (
     <>
-      <Toaster position="top-right" reverseOrder={false} />
+     <ToastContainer />
       <Formik
         initialValues={initialValues}
         validationSchema={schema}
@@ -96,7 +102,7 @@ export const ContactForm = () => {
             Number
             <Input type="tel" id={telInputId} name="number" required />
             <FormError name="number" />
-          </Label>
+            </Label>
           <Button disabled={formIsLoading} type="submit">
             {formIsLoading ? 'Loading...' : 'Add contact'}
           </Button>

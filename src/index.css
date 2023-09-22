@@ -1,6 +1,7 @@
 @import-normalize;
 
 body {
+  color: black;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -19,6 +20,11 @@ ol,
 button {
   padding: 0;
   margin: 0;
+}
+
+a {
+  text-decoration: none;
+  color: black;
 }
 
 h1,
