@@ -4,7 +4,7 @@ import {
   selectIsRefreshing,
   selectIsLoggedIn,
   selectIsLoading,
-  selectIsAuthError,
+  selectAuthError,
 } from 'redux/AuthSlice';
 
 export const useAuth = () => {
@@ -12,7 +12,7 @@ export const useAuth = () => {
   const isRefreshing = useSelector(selectIsRefreshing);
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const isLoading = useSelector(selectIsLoading);
-  const isAuthError = useSelector(selectIsAuthError);
+  const authError = useSelector(selectAuthError);
 
-  return { user, isRefreshing, isLoggedIn, isLoading, isAuthError };
+  return { user, isRefreshing, isLoggedIn, isLoading, authError };
 };

@@ -1,25 +1,13 @@
 import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
 import { useAuth } from 'hooks';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { clearAuthError } from 'redux/AuthSlice';
 import { logIn } from 'redux/AuthSlice/operations';
 import { LogForm, Label, Input, Button, ToastText } from './LoginForm.styled';
 
 export const LoginForm = () => {
   const dispatch = useDispatch();
-  const { isLoading, isAuthError } = useAuth();
-
-  useEffect(() => {
-    if (isAuthError) {
-      toast.error(<ToastText>Invalid email address or password.</ToastText>, {
-        autoClose: 2000,
-      });
-
-      dispatch(clearAuthError());
-    }
-  }, [dispatch, isAuthError]);
+  const { isLoading } = useAuth();
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -31,7 +19,15 @@ export const LoginForm = () => {
         email: form.elements.email.value,
         password: form.elements.password.value,
       })
-    );
+    )
+      .then(({ meta: { requestStatus }, payload }) => {
+        if (requestStatus === 'rejected') throw new Error(payload);
+      })
+      .catch(({ message }) => {
+        toast.error(<ToastText>{message}</ToastText>, {
+          autoClose: 2000,
+        });
+      });
 
     form.reset();
   };

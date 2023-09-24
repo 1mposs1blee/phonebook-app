@@ -6,6 +6,7 @@ import { PrivateRoute } from 'components/PrivateRoute';
 import { RestrictedRoute } from 'components/RestrictedRoute';
 import { refreshUser } from 'redux/AuthSlice/operations';
 import { useAuth } from 'hooks';
+import { RefreshingMessage } from './App.styled';
 
 const HomePage = lazy(() => import('pages/Home'));
 const RegisterPage = lazy(() => import('pages/Register'));
@@ -21,41 +22,38 @@ export const App = () => {
     dispatch(refreshUser());
   }, [dispatch]);
 
-  return (
-    !isRefreshing && (
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route
-            path="register"
-            element={
-              <RestrictedRoute
-                redirectTo="/contactbook"
-                component={<RegisterPage />}
-              />
-            }
-          />
-          <Route
-            path="login"
-            element={
-              <RestrictedRoute
-                redirectTo="/contactbook"
-                component={<LoginPage />}
-              />
-            }
-          />
-          <Route
-            path="contactbook"
-            element={
-              <PrivateRoute
-                redirectTo="/login"
-                component={<ContactBookPage />}
-              />
-            }
-          />
-          <Route path="*" element={<PageNotFound />} />
-        </Route>
-      </Routes>
-    )
+  return isRefreshing ? (
+    <RefreshingMessage>Refreshing user...</RefreshingMessage>
+  ) : (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route
+          path="register"
+          element={
+            <RestrictedRoute
+              redirectTo="/contactbook"
+              component={<RegisterPage />}
+            />
+          }
+        />
+        <Route
+          path="login"
+          element={
+            <RestrictedRoute
+              redirectTo="/contactbook"
+              component={<LoginPage />}
+            />
+          }
+        />
+        <Route
+          path="contactbook"
+          element={
+            <PrivateRoute redirectTo="/login" component={<ContactBookPage />} />
+          }
+        />
+        <Route path="*" element={<PageNotFound />} />
+      </Route>
+    </Routes>
   );
 };

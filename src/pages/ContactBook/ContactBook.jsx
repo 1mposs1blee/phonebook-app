@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { contactsOperations } from 'redux/ContactsSlice';
-import { selectError } from 'redux/ContactsSlice';
 import { ContactList } from 'components/ContactList';
 import { ContactForm } from 'components/ContactForm';
 import { Filter } from 'components/Filter';
@@ -16,19 +15,18 @@ import {
 
 const ContactBook = () => {
   const dispatch = useDispatch();
-  const errorInfo = useSelector(selectError);
 
   useEffect(() => {
-    dispatch(contactsOperations.fetchContacts());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (errorInfo) {
-      toast.error(<ToastText>{errorInfo}</ToastText>, {
-        autoClose: 2000,
+    dispatch(contactsOperations.fetchContacts())
+      .then(({ meta: { requestStatus }, payload }) => {
+        if (requestStatus === 'rejected') throw new Error(payload);
+      })
+      .catch(({ message }) => {
+        toast.error(<ToastText>{message}</ToastText>, {
+          autoClose: 2000,
+        });
       });
-    }
-  }, [errorInfo]);
+  }, [dispatch]);
 
   return (
     <Wrapper>

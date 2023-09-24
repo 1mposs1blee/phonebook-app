@@ -1,5 +1,9 @@
 import styled from '@emotion/styled';
 
+export const ToastText = styled.span`
+  font-weight: 600;
+`;
+
 export const ContactsListItem = styled.li`
   display: flex;
   align-items: center;

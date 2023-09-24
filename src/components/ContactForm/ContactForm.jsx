@@ -75,7 +75,15 @@ export const ContactForm = () => {
       return;
     }
 
-    await dispatch(contactsOperations.addContact({ name: trimName, number }));
+    await dispatch(contactsOperations.addContact({ name: trimName, number }))
+      .then(({ meta: { requestStatus }, payload }) => {
+        if (requestStatus === 'rejected') throw new Error(payload);
+      })
+      .catch(({ message }) => {
+        toast.error(<ToastText>{message}</ToastText>, {
+          autoClose: 2000,
+        });
+      });
 
     resetForm();
 

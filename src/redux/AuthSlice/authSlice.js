@@ -7,16 +7,17 @@ const initialState = {
   isLoggedIn: false,
   isRefreshing: false,
   isLoading: false,
-  isAuthError: false,
+  authError: null,
 };
 
 const handlePending = state => {
   state.isLoading = true;
+  state.authError = null;
 };
 
-const handleRejected = state => {
+const handleRejected = (state, action) => {
   state.isLoading = false;
-  state.isAuthError = true;
+  state.authError = action.payload;
 };
 
 const authSlice = createSlice({
@@ -59,16 +60,9 @@ const authSlice = createSlice({
       .addCase(refreshUser.rejected, state => {
         state.isRefreshing = false;
       }),
-  reducers: {
-    clearAuthError(state) {
-      state.isAuthError = false;
-    },
-  },
 });
 
 export const authReducer = authSlice.reducer;
-
-export const { clearAuthError } = authSlice.actions;
 
 //Selectors
 
@@ -80,4 +74,4 @@ export const selectIsRefreshing = state => state.auth.isRefreshing;
 
 export const selectIsLoading = state => state.auth.isLoading;
 
-export const selectIsAuthError = state => state.auth.isAuthError;
+export const selectAuthError = state => state.auth.authError;
